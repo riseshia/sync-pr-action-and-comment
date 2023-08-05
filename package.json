@@ -1,6 +1,6 @@
 {
   "name": "sycn-pr-action-and-comment",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sync PR and comment",
   "main": "index.js",
   "scripts": {
