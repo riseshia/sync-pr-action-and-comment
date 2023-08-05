@@ -1,7 +1,6 @@
 name: CI
 on:
   pull_request:
-    branches: [main]
     paths-ignore:
     - 'README.md'
 
@@ -16,15 +15,15 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Test comment with body-as-string
-        uses: ./
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-as-string: |
-            Revision: ${{ github.event.pull_request.head.sha }}
-          comment-matcher: '<-- comment-with-body-as-string -->'
+      uses: ./
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body-as-string: |
+          Revision: ${{ github.event.pull_request.head.sha }}
+        comment-matcher: '<!-- comment-with-body-as-string -->'
     - name: Test comment with body-as-filepath
-        uses: ./
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-as-filepath: '.github/body-as-filepath.md'
-          comment-matcher: '<-- comment-with-body-as-filepath -->'
+      uses: ./
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body-as-filepath: '.github/body-as-filepath.md'
+        comment-matcher: '<!-- comment-with-body-as-filepath -->'
