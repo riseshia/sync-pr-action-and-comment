@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "prepare": "ncc build index.js -o dist --source-map --license licenses.txt",
+    "prepare": "ncc build index.ts -o dist --source-map --license licenses.txt",
     "all": "npm run lint && npm run prepare"
   },
   "repository": {
@@ -27,7 +27,10 @@
     "@actions/github": "^5.1.1"
   },
   "devDependencies": {
+    "@types/node": "^20.4.7",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@vercel/ncc": "^0.36.1",
-    "eslint": "^8.37.0"
+    "eslint": "^8.37.0",
+    "typescript": "^5.1.6"
   }
 }
