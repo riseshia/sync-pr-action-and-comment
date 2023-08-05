@@ -1,4 +1,5 @@
 const core = require('@actions/core');
+const github = require('@actions/github');
 const fs = require('fs');
 
 function getBody(inputs) {
@@ -21,8 +22,9 @@ function truncateBody(body) {
   return body
 }
 
-async function createOrUpdateComment(octokit, inputs, bodyWithMatcher) {
+async function createOrUpdateComment(inputs, bodyWithMatcher) {
   const [owner, repo] = inputs.repository.split('/');
+  const octokit = github.getOctokit(inputs.token);
 
   const opts = octokit.rest.issues.listComments.endpoint.merge({
     issue_number: inputs.issueNumber,
@@ -66,13 +68,9 @@ async function run() {
 
     const body = getBody(inputs);
 
-    const bodyWithMatcher = `
-    ${inputs.commentMatcher}
-    ${body}
-    `;
+    const bodyWithMatcher = `${inputs.commentMatcher}\n${body}`;
 
-    const octokit = github.getOctokit(inputs.token);
-    await createOrUpdateComment(octokit, inputs, bodyWithMatcher);
+    await createOrUpdateComment(inputs, bodyWithMatcher);
   } catch (error) {
     core.setFailed(error.message);
   }

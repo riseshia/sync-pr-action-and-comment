@@ -22,7 +22,7 @@ inputs:
     required: false
   comment-matcher:
     description: 'comment body as file path. file is expected to be utf8 text. you should provide either body_as_string or body_as_filepath.'
-    default: '<-- sync-pr-action-and-comment -->'
+    default: '<!-- sync-pr-action-and-comment -->'
 
 runs:
   using: 'node16'
