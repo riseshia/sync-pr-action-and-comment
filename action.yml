@@ -1,13 +1,29 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Sync PR Action and comment'
+description: 'Sync PR and comment'
+
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  token:
+    description: 'GITHUB_TOKEN or a repo scoped PAT.'
+    default: ${{ github.token }}
+  repository:
+    description: 'The full name of the repository in which to create or update a comment.'
+    default: ${{ github.repository }}
+  issue-number:
+    description: 'target issue or pr number'
     required: true
-    default: '1000'
-outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+  comment-author:
+    description: 'The GitHub user name of the comment author.'
+    default: 'github-actions[bot]'
+  body-as-string:
+    description: 'comment body as string. you should provide either body_as_string or body_as_filepath.'
+    required: false
+  body-as-filepath:
+    description: 'comment body as file path. file is expected to be utf8 text. you should provide either body_as_string or body_as_filepath.'
+    required: false
+  comment-matcher:
+    description: 'comment body as file path. file is expected to be utf8 text. you should provide either body_as_string or body_as_filepath.'
+    default: '<-- sync-pr-action-and-comment -->'
+
 runs:
   using: 'node16'
   main: 'dist/index.js'

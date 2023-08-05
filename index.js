@@ -1,18 +1,78 @@
 const core = require('@actions/core');
-const wait = require('./wait');
+const fs = require('fs');
 
+function getBody(inputs) {
+  if (inputs.bodyAsString && !inputs.bodyAsFilepath) {
+    return inputs.bodyAsString;
+  }
+  if (!inputs.bodyAsString && inputs.bodyAsFilepath) {
+    return fs.readFileSync(inputs.bodyAsFilepath, 'utf8');
+  }
 
-// most @actions toolkit packages have async methods
+  throw new Error("you should provide either body-as-string or body-as-filepath.");
+}
+
+function truncateBody(body) {
+  // 65536 characters is the maximum allowed for issue comments.
+  if (body.length > 65536) {
+    core.warning("Comment body is too long. Truncating to 65536 characters.")
+    return body.substring(0, 65536)
+  }
+  return body
+}
+
+async function createOrUpdateComment(octokit, inputs, bodyWithMatcher) {
+  const [owner, repo] = inputs.repository.split('/');
+
+  const opts = octokit.rest.issues.listComments.endpoint.merge({
+    issue_number: inputs.issueNumber,
+    owner: owner,
+    repo: repo,
+    per_page: 100,
+  });
+  const comments = await octokit.paginate(opts)
+  const actionComment = comments.find(comment => {
+    return comment.user.login === inputs.commentAuthor && comment.body.includes(inputs.commentMatcher)
+  });
+
+  if (actionComment) {
+    octokit.rest.issues.updateComment({
+      owner: owner,
+      repo: repo,
+      comment_id: actionComment.id,
+      body: truncateBody(bodyWithMatcher)
+    });
+  } else {
+    octokit.rest.issues.createComment({
+      owner: owner,
+      repo: repo,
+      issue_number: inputs.issueNumber,
+      body: truncateBody(bodyWithMatcher)
+    });
+  }
+}
+
 async function run() {
   try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
+    const inputs = {
+      token: core.getInput('token'),
+      repository: core.getInput('repository'),
+      issueNumber: core.getInput('issue-number'),
+      commentAuthor: core.getInput('comment-author'),
+      bodyAsString: core.getInput('body-as-string'),
+      bodyAsFilepath: core.getInput('body-as-filepath'),
+      commentMatcher: core.getInput('comment-matcher'),
+    };
 
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
+    const body = getBody(inputs);
 
-    core.setOutput('time', new Date().toTimeString());
+    const bodyWithMatcher = `
+    ${inputs.commentMatcher}
+    ${body}
+    `;
+
+    const octokit = github.getOctokit(inputs.token);
+    await createOrUpdateComment(octokit, inputs, bodyWithMatcher);
   } catch (error) {
     core.setFailed(error.message);
   }
