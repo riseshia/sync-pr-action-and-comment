@@ -11,7 +11,7 @@ Create or Update comment from actions to PR.
 
 ```yml
 - name: Preview publish result
-  uses: ./
+  uses: riseshia/sync-pr-action-and-comment@v1
   with:
     issue-number: ${{ github.event.pull_request.number }}
     body-as-string: |
@@ -22,7 +22,7 @@ Create or Update comment from actions to PR.
 
 ```yml
 - name: Terraform plan result
-  uses: ./
+  uses: riseshia/sync-pr-action-and-comment@v1
   with:
     issue-number: ${{ github.event.pull_request.number }}
     body-as-filepath: '/tmp/plan_result'
