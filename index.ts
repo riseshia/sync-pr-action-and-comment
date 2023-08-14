@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import { readFileSync, existsSync } from 'fs'
 
+
 interface Inputs {
   token: string
   repository: string
