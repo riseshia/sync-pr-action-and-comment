@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 
 interface Inputs {
   token: string
@@ -28,7 +28,12 @@ function getBody(inputs: Inputs) {
   if (inputs.bodyAsString && !inputs.bodyAsFilepath) {
     return inputs.bodyAsString
   }
+
   if (!inputs.bodyAsString && inputs.bodyAsFilepath) {
+    if (!existsSync(inputs.bodyAsFilepath)) {
+      throw new Error(`File '${inputs.bodyAsFilepath}' does not exist.`)
+    }
+
     return readFileSync(inputs.bodyAsFilepath, 'utf8')
   }
 

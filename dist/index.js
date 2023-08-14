@@ -9680,6 +9680,9 @@ function getBody(inputs) {
         return inputs.bodyAsString;
     }
     if (!inputs.bodyAsString && inputs.bodyAsFilepath) {
+        if (!(0, fs_1.existsSync)(inputs.bodyAsFilepath)) {
+            throw new Error(`File '${inputs.bodyAsFilepath}' does not exist.`);
+        }
         return (0, fs_1.readFileSync)(inputs.bodyAsFilepath, 'utf8');
     }
     throw new Error("you should provide either body-as-string or body-as-filepath.");
