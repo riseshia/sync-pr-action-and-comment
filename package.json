@@ -4,7 +4,7 @@
   "description": "Sync PR and comment",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "eslint",
     "prepare": "ncc build index.ts -o dist --source-map --license licenses.txt",
     "all": "npm run lint && npm run prepare"
   },
@@ -23,13 +23,13 @@
   },
   "homepage": "https://github.com/riseshia/sync-pr-action-and-comment#readme",
   "dependencies": {
-    "@actions/core": "^1.10.0",
-    "@actions/github": "^5.1.1"
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.1"
   },
   "devDependencies": {
-    "@types/node": "^20.4.7",
+    "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
-    "@vercel/ncc": "^0.36.1",
+    "@vercel/ncc": "^0.38.3",
     "eslint": "^8.37.0",
     "typescript": "^5.1.6"
   }
